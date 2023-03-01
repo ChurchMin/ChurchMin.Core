@@ -1,0 +1,1 @@
+# ChurchMin.Core
