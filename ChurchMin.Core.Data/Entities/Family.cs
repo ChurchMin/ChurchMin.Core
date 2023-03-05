@@ -8,6 +8,7 @@ namespace ChurchMin.Core.Data.Entities
 {
     public class Family : BaseEntity
     {
-        public required string FamilyName { get; set; }        
+        public required string FamilyName { get; set; }
+        public ICollection<Person>? FamilyMembers { get; set; }
     }
 }
