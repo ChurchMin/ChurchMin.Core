@@ -24,6 +24,7 @@ namespace ChurchMin.Core.Data
         public DbSet<Family> Family { get; set; }
         public DbSet<Person> Person { get; set; }
         public DbSet<PhoneNumber> PhoneNumber { get; set; }
+        public DbSet<Ministry> Ministry { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
