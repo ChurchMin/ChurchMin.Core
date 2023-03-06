@@ -1,0 +1,19 @@
+{
+  "ServerUri": "https://sonarcloud.io/",
+  "Organization": {
+    "Key": "churchmin",
+    "Name": "ChurchMin"
+  },
+  "ProjectKey": "ChurchMin_ChurchMin.Core",
+  "ProjectName": "ChurchMin.Core",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AYazUakIntkYawspwHYU",
+      "ProfileTimestamp": "2023-02-22T15:28:17Z"
+    },
+    "Secrets": {
+      "ProfileKey": "AYazUakIntkYawspwHYQ",
+      "ProfileTimestamp": "2023-01-25T09:40:14Z"
+    }
+  }
+}

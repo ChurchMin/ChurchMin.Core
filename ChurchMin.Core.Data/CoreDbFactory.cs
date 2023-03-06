@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace ChurchMin.Core.Data
 {
@@ -13,7 +14,8 @@ namespace ChurchMin.Core.Data
     {
         public CoreDbContext CreateDbContext(string[] args)
         {
-            var tenantInfo = new TenantInfo { ConnectionString = @"Server=localhost;Database=ChurchMin;User Id=church;Password=church;MultipleActiveResultSets=true" };
+            var config = new ConfigurationBuilder().AddUserSecrets<CoreDbFactory>().Build();
+            var tenantInfo = new TenantInfo { ConnectionString = config.GetValue("ConnectionString", "") };
             var optionsBuilder = new DbContextOptionsBuilder<CoreDbContext>();
             optionsBuilder.UseSqlServer(tenantInfo.ConnectionString);
             return new CoreDbContext(tenantInfo, optionsBuilder.Options);
