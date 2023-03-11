@@ -1,16 +1,15 @@
-﻿using Finbuckle.MultiTenant;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChurchMin.Core.Data.Entities
+namespace ChurchMin.Contracts.v1.Responses
 {
-    public class Ministry : BaseEntity
+    public class MinistryResponse
     {
+        public Guid Id { get; set; }
         public required string Name { get; set; }
         public string? Description { get; set; }
-        public ICollection<Person>? MinistryMembers { get; set; }
     }
 }

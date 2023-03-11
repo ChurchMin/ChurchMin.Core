@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace ChurchMin.Core.Data.Entities
 {
-    [MultiTenant]
     public class PhoneNumber : BaseEntity
     {
         public required string Phone { get; set; }

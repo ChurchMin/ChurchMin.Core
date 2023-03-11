@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace ChurchMin.Core.Data.Entities
 {
-    [MultiTenant]
     public class Family : BaseEntity
     {
         public required string FamilyName { get; set; }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChurchMin.Core.Data.Migrations
 {
     [DbContext(typeof(CoreDbContext))]
-    [Migration("20230306073458_Initital")]
+    [Migration("20230311155024_Initital")]
     partial class Initital
     {
         /// <inheritdoc />
@@ -66,11 +66,6 @@ namespace ChurchMin.Core.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
                     b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -82,8 +77,6 @@ namespace ChurchMin.Core.Data.Migrations
                     b.HasIndex("PersonId");
 
                     b.ToTable("Address");
-
-                    b.HasAnnotation("Finbuckle:MultiTenant", true);
                 });
 
             modelBuilder.Entity("ChurchMin.Core.Data.Entities.EmailAddress", b =>
@@ -113,11 +106,6 @@ namespace ChurchMin.Core.Data.Migrations
                     b.Property<Guid>("PersonId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -133,8 +121,6 @@ namespace ChurchMin.Core.Data.Migrations
                     b.HasIndex("PersonId");
 
                     b.ToTable("EmailAddress");
-
-                    b.HasAnnotation("Finbuckle:MultiTenant", true);
                 });
 
             modelBuilder.Entity("ChurchMin.Core.Data.Entities.Family", b =>
@@ -161,11 +147,6 @@ namespace ChurchMin.Core.Data.Migrations
                     b.Property<DateTime>("LastModifiedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
                     b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -175,8 +156,44 @@ namespace ChurchMin.Core.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Family");
+                });
 
-                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+            modelBuilder.Entity("ChurchMin.Core.Data.Entities.Ministry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModifiedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ministry");
                 });
 
             modelBuilder.Entity("ChurchMin.Core.Data.Entities.Person", b =>
@@ -215,6 +232,9 @@ namespace ChurchMin.Core.Data.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("GeneralNotes")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Grade")
                         .HasColumnType("nvarchar(max)");
 
@@ -241,11 +261,6 @@ namespace ChurchMin.Core.Data.Migrations
                     b.Property<string>("PreferredName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -262,8 +277,6 @@ namespace ChurchMin.Core.Data.Migrations
                     b.HasIndex("FamilyId");
 
                     b.ToTable("Person");
-
-                    b.HasAnnotation("Finbuckle:MultiTenant", true);
                 });
 
             modelBuilder.Entity("ChurchMin.Core.Data.Entities.PhoneNumber", b =>
@@ -293,11 +306,6 @@ namespace ChurchMin.Core.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -313,8 +321,21 @@ namespace ChurchMin.Core.Data.Migrations
                     b.HasIndex("PersonId");
 
                     b.ToTable("PhoneNumber");
+                });
 
-                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+            modelBuilder.Entity("MinistryPerson", b =>
+                {
+                    b.Property<Guid>("MinistriesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MinistryMembersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MinistriesId", "MinistryMembersId");
+
+                    b.HasIndex("MinistryMembersId");
+
+                    b.ToTable("MinistryPerson");
                 });
 
             modelBuilder.Entity("ChurchMin.Core.Data.Entities.Address", b =>
@@ -363,6 +384,21 @@ namespace ChurchMin.Core.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("MinistryPerson", b =>
+                {
+                    b.HasOne("ChurchMin.Core.Data.Entities.Ministry", null)
+                        .WithMany()
+                        .HasForeignKey("MinistriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChurchMin.Core.Data.Entities.Person", null)
+                        .WithMany()
+                        .HasForeignKey("MinistryMembersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ChurchMin.Core.Data.Entities.Family", b =>

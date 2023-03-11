@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace ChurchMin.Core.Data.Entities
 {
-    [MultiTenant]
     public class Person : BaseEntity
     {
         public string? Title { get; set; }
@@ -30,5 +29,7 @@ namespace ChurchMin.Core.Data.Entities
         public ICollection<Address>? Addresses { get; set; }
         public Guid? FamilyId { get; set; }
         public Family? Family { get; set; }
+
+        public ICollection<Ministry> Ministries { get; set; }
     }
 }

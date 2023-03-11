@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 
 namespace ChurchMin.Core.Data
 {
-    public class CoreDbContext : MultiTenantDbContext
+    public class CoreDbContext : DbContext
     {
-        public CoreDbContext(ITenantInfo tenantInfo) : base(tenantInfo)
+        public CoreDbContext(DbContextOptions<CoreDbContext> options)
+        : base(options)
         {
         }
 
-        public CoreDbContext(ITenantInfo tenantInfo, DbContextOptions options) : base(tenantInfo, options)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
 

@@ -17,7 +17,6 @@ namespace ChurchMin.Core.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FamilyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -27,6 +26,24 @@ namespace ChurchMin.Core.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Family", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ministry",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ministry", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -45,10 +62,10 @@ namespace ChurchMin.Core.Data.Migrations
                     AdultChild = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Grade = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MedicalNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GeneralNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDoNotContact = table.Column<bool>(type: "bit", nullable: false),
                     EmergencyContactId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FamilyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -81,7 +98,6 @@ namespace ChurchMin.Core.Data.Migrations
                     Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PersonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -107,7 +123,6 @@ namespace ChurchMin.Core.Data.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PersonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -126,6 +141,30 @@ namespace ChurchMin.Core.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MinistryPerson",
+                columns: table => new
+                {
+                    MinistriesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MinistryMembersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MinistryPerson", x => new { x.MinistriesId, x.MinistryMembersId });
+                    table.ForeignKey(
+                        name: "FK_MinistryPerson_Ministry_MinistriesId",
+                        column: x => x.MinistriesId,
+                        principalTable: "Ministry",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MinistryPerson_Person_MinistryMembersId",
+                        column: x => x.MinistryMembersId,
+                        principalTable: "Person",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PhoneNumber",
                 columns: table => new
                 {
@@ -133,7 +172,6 @@ namespace ChurchMin.Core.Data.Migrations
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PersonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -162,6 +200,11 @@ namespace ChurchMin.Core.Data.Migrations
                 column: "PersonId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MinistryPerson_MinistryMembersId",
+                table: "MinistryPerson",
+                column: "MinistryMembersId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Person_EmergencyContactId",
                 table: "Person",
                 column: "EmergencyContactId");
@@ -187,7 +230,13 @@ namespace ChurchMin.Core.Data.Migrations
                 name: "EmailAddress");
 
             migrationBuilder.DropTable(
+                name: "MinistryPerson");
+
+            migrationBuilder.DropTable(
                 name: "PhoneNumber");
+
+            migrationBuilder.DropTable(
+                name: "Ministry");
 
             migrationBuilder.DropTable(
                 name: "Person");
